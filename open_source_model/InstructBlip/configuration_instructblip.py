@@ -13,8 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """ InstructBLIP model configuration"""
-import sys
-sys.path.insert(1, '/data/gdata/pylib')
 import copy
 import os
 from typing import Union
