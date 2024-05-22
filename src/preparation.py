@@ -2,6 +2,7 @@
 
 import sys
 sys.path.append('./LLaVA-main') # Replace it with your llava path
+sys.path.append('./InstructBlip') # Replace it with your instructblip path
 sys.path.append('./mPLUG-Owl-main/mPLUG-Owl2') # Replace it with your mplug-owl2 path
 
 import os
