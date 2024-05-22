@@ -15,9 +15,6 @@
 """
 Processor class for InstructBLIP. Largely copy of Blip2Processor with addition of a tokenizer for the Q-Former.
 """
-
-import sys
-sys.path.insert(1, '/data/gdata/pylib')
 import os
 from typing import List, Optional, Union
 
