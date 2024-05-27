@@ -48,8 +48,8 @@ def main():
         unembedding = model.lm_head.weight.data.T.cuda()[:, :vocab_size]
 
         # save layer projection and top tokens for each neuron
-	create_dir(f'{args.save_to}/llava_13b_layer_projection')
-	create_dir(f'{args.save_to}/llava_13b_mlp_out')
+		create_dir(f'{args.save_to}/llava_13b_layer_projection')
+		create_dir(f'{args.save_to}/llava_13b_mlp_out')
 
         total_top_words = []
         for n in range(model.config.num_hidden_layers):
@@ -102,8 +102,8 @@ def main():
         unembedding = language_model.lm_head.weight.data.T[:, :vocab_size].cuda()
 
         # save layer projection and top tokens for each neuron
-	create_dir(f'{args.save_to}/instructblip_7b_layer_projection')
-	create_dir(f'{args.save_to}/instructblip_7b_mlp_out')
+		create_dir(f'{args.save_to}/instructblip_7b_layer_projection')
+		create_dir(f'{args.save_to}/instructblip_7b_mlp_out')
 
         total_top_words = []
         for n in range(config.text_config.num_hidden_layers):
@@ -152,8 +152,8 @@ def main():
         unembedding = model.lm_head.weight.data.T.cuda()[:, :vocab_size]
 
         # save layer projection and top tokens for each neuron
-	create_dir(f'{args.save_to}/mplug_owl2_7b_layer_projection')
-	create_dir(f'{args.save_to}/mplug_owl2_7b_mlp_out')
+		create_dir(f'{args.save_to}/mplug_owl2_7b_layer_projection')
+		create_dir(f'{args.save_to}/mplug_owl2_7b_mlp_out')
 
         total_top_words = []
         for n in range(model.config.num_hidden_layers):
