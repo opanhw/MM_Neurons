@@ -1,10 +1,10 @@
 #!/usr/local/bin/python3
 
 import sys
-sys.path.append('./open_source_model/LLaVA-main') # Replace it with your llava path
-sys.path.append('./open_source_model/InstructBlip') # Replace it with your instructblip path
-sys.path.append('./open_source_model/mPLUG-Owl-main/mPLUG-Owl2') # Replace it with your mplug-owl2 path
 
+sys.path.append('./open_source_model/LLaVA-main')  # Replace it with your llava path
+sys.path.append('./open_source_model/InstructBlip')  # Replace it with your instructblip path
+sys.path.append('./open_source_model/mPLUG-Owl-main/mPLUG-Owl2')  # Replace it with your mplug-owl2 path
 
 import os
 import cv2
@@ -28,12 +28,12 @@ def create_dir(name):
 
 def bilinear_interpolation(img, height, width):
     """
-    bilinear interpolation
-    :param img: original image
-    :param height: image height after scaling
-    :param width: image width after scaling
-    :return: image after scaling
-    """
+	bilinear interpolation
+	:param img: original image
+	:param height: image height after scaling
+	:param width: image width after scaling
+	:return: image after scaling
+	"""
     # height and width of original image
     ori_height, ori_width = img.shape[:2]
     # image after scaling
@@ -68,15 +68,18 @@ class trainer:
     def getModel(self):
         # Getting the required model
         if self.args.model_type == "llava":
-			from llava.model import *
-			from llava.model.builder import load_pretrained_model
-			from llava.conversation import conv_templates, SeparatorStyle
-			from llava.mm_utils import tokenizer_image_token, get_model_name_from_path, KeywordsStoppingCriteria
-			from llava.constants import IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
+            from llava.model import *
+            from llava.model.builder import load_pretrained_model
+            from llava.conversation import conv_templates, SeparatorStyle
+            from llava.mm_utils import tokenizer_image_token, get_model_name_from_path, KeywordsStoppingCriteria
+            from llava.constants import IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, \
+                DEFAULT_IM_END_TOKEN
 
             # load llava
             self.model_name = get_model_name_from_path(self.args.model_path)
-            self.tokenizer, self.model, self.image_processor, context_len = load_pretrained_model(self.args.model_path, self.args.model_base, self.model_name)
+            self.tokenizer, self.model, self.image_processor, context_len = load_pretrained_model(self.args.model_path,
+                                                                                                  self.args.model_base,
+                                                                                                  self.model_name)
             print('Successfully load.')
 
             # get query
@@ -111,18 +114,21 @@ class trainer:
                 prompt += 'An image of'
 
             # get input ids
-            self.input_ids = tokenizer_image_token(prompt, self.tokenizer, IMAGE_TOKEN_INDEX, return_tensors='pt').unsqueeze(0).cuda()
+            self.input_ids = tokenizer_image_token(prompt, self.tokenizer, IMAGE_TOKEN_INDEX,
+                                                   return_tensors='pt').unsqueeze(0).cuda()
 
             # image token length of llava is 256
             self.image_token_len = 256
 
 
         elif self.args.model_type == "instructblip":
-			from modeling_instructblip import InstructBlipForConditionalGeneration
-			from processing_instructblip import InstructBlipProcessor
-			
-            self.model = InstructBlipForConditionalGeneration.from_pretrained(self.args.model_path, low_cpu_mem_usage=True, device_map="auto")
-            self.processor = InstructBlipProcessor.from_pretrained(self.args.model_path, low_cpu_mem_usage=True, device_map="auto")
+            from modeling_instructblip import InstructBlipForConditionalGeneration
+            from processing_instructblip import InstructBlipProcessor
+
+            self.model = InstructBlipForConditionalGeneration.from_pretrained(self.args.model_path,
+                                                                              low_cpu_mem_usage=True, device_map="auto")
+            self.processor = InstructBlipProcessor.from_pretrained(self.args.model_path, low_cpu_mem_usage=True,
+                                                                   device_map="auto")
             self.tokenizer = self.processor.tokenizer
 
             self.prompt = self.args.query
@@ -132,14 +138,16 @@ class trainer:
             self.image_token_len = 32
 
         elif self.args.model_type == "mplug-owl2":
-			from mplug_owl2.constants import IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN
-			from mplug_owl2.conversation import conv_templates, SeparatorStyle
-			from mplug_owl2.model.builder import load_pretrained_model
-			from mplug_owl2.mm_utils import process_images, tokenizer_image_token, get_model_name_from_path, KeywordsStoppingCriteria
+            from mplug_owl2.constants import IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN
+            from mplug_owl2.conversation import conv_templates, SeparatorStyle
+            from mplug_owl2.model.builder import load_pretrained_model
+            from mplug_owl2.mm_utils import process_images, tokenizer_image_token, get_model_name_from_path, \
+                KeywordsStoppingCriteria
 
-			
             self.model_name = get_model_name_from_path(self.args.model_path)
-            self.tokenizer, self.model, self.image_processor, context_len = load_pretrained_model(self.args.model_path, self.args.model_base, self.model_name)
+            self.tokenizer, self.model, self.image_processor, context_len = load_pretrained_model(self.args.model_path,
+                                                                                                  self.args.model_base,
+                                                                                                  self.model_name)
             print('Successfully load.')
 
             inp = DEFAULT_IMAGE_TOKEN + self.args.query
@@ -156,10 +164,8 @@ class trainer:
             print(prompt)
 
             # get input ids
-            self.input_ids = tokenizer_image_token(prompt, self.tokenizer, IMAGE_TOKEN_INDEX, return_tensors='pt').unsqueeze(0).cuda()
-
-            # print(self.input_ids.shape)
-            # print(self.input_ids)
+            self.input_ids = tokenizer_image_token(prompt, self.tokenizer, IMAGE_TOKEN_INDEX,
+                                                   return_tensors='pt').unsqueeze(0).cuda()
 
             self.image_token_len = 65
 
@@ -168,10 +174,9 @@ class trainer:
             image = Image.fromarray(np.uint8(batch['image'][0].numpy().transpose((1, 2, 0)) * 255))
             label = None
         else:
-        	raise NotImplementedError
+            raise NotImplementedError
 
         return image, label
-
 
     def perturbation(self, eval_data):
         test_dataloader = DataLoader(eval_data, batch_size=self.args.bz, num_workers=1, pin_memory=True)
@@ -199,8 +204,10 @@ class trainer:
             stopping_criteria = KeywordsStoppingCriteria(keywords, self.tokenizer, self.input_ids)
 
             # randomly select neurons
-            random_skill = torch.randperm(self.model.config.intermediate_size * self.model.config.num_hidden_layers)[:self.args.top_neurons]
-            random_mm_neurons = [[x // self.model.config.intermediate_size, x % self.model.config.intermediate_size] for x in random_skill]
+            _random = torch.randperm(self.model.config.intermediate_size * self.model.config.num_hidden_layers)[
+                           :self.args.top_neurons]
+            random_mm_neurons = [[x // self.model.config.intermediate_size, x % self.model.config.intermediate_size] for
+                                 x in _random]
 
             # modify model state dict
             state_dict = self.model.state_dict()
@@ -280,7 +287,8 @@ class trainer:
                 print(f'original outputs: {original_outputs}')
                 print(f'perturb outputs: {outputs}')
 
-                results = {'original outputs': original_outputs, 'perturb outputs': outputs, 'random outputs': random_outputs}
+                results = {'original outputs': original_outputs, 'perturb outputs': outputs,
+                           'random outputs': random_outputs}
 
                 with open(f'{noun_path}/perturb.json', 'w+', encoding='utf-8') as f:
                     f.write(json.dumps(results, indent=4, ensure_ascii=False))
@@ -296,8 +304,6 @@ class trainer:
             if 0 < self.args.max_num <= cnt - self.args.start + 1 or self.args.end <= cnt:
                 break
 
-
-
     def find_mm_neurons(self, eval_data):
         test_dataloader = DataLoader(eval_data, batch_size=self.args.bz, num_workers=1, pin_memory=True)
         cnt = 0
@@ -305,14 +311,18 @@ class trainer:
 
         if self.args.model_type == 'llava':
             total_top_words = torch.load(f'{self.args.preparation_path}/llava_13b_neuron_tokens')
-            projection = [torch.load(f'{self.args.preparation_path}/llava_13b_layer_projection/layer_{layer}').cpu() for layer in tqdm(range(self.model.config.num_hidden_layers))]
+            projection = [torch.load(f'{self.args.preparation_path}/llava_13b_layer_projection/layer_{layer}').cpu() for
+                          layer in tqdm(range(self.model.config.num_hidden_layers))]
         elif self.args.model_type == 'instructblip':
             total_top_words = torch.load(f'{self.args.preparation_path}/instructblip_7b_neuron_tokens')
-            projection = [torch.load(f'{self.args.preparation_path}/instructblip_7b_layer_projection/layer_{layer}').cpu() for layer in
-                          tqdm(range(self.model.config.num_hidden_layers))]
+            projection = [
+                torch.load(f'{self.args.preparation_path}/instructblip_7b_layer_projection/layer_{layer}').cpu() for
+                layer in
+                tqdm(range(self.model.config.num_hidden_layers))]
         elif self.args.model_type == 'mplug-owl2':
             total_top_words = torch.load(f'{self.args.preparation_path}/mplug_owl2_7b_neuron_tokens')
-            projection = [torch.load(f'{self.args.preparation_path}/mplug_owl2_7b_layer_projection/layer_{layer}').cpu() for layer in
+            projection = [torch.load(f'{self.args.preparation_path}/mplug_owl2_7b_layer_projection/layer_{layer}').cpu()
+                          for layer in
                           tqdm(range(self.model.config.num_hidden_layers))]
 
         import time
@@ -384,7 +394,7 @@ class trainer:
                         **self.inputs,
                         max_new_tokens=50,
                     )
-					
+
                 elif self.args.model_type == 'mplug-owl2':
                     output_ids = self.model.generate(
                         self.input_ids,
@@ -419,7 +429,6 @@ class trainer:
                 last_activation = torch.stack([torch.stack(x) for x in last_activation])
 
                 print(last_activation.shape)
-
 
             tokenized_text = self.annotator.tokenize(outputs.replace('.', ' '))[0]
             pos_tag = self.annotator.pos_tag(outputs.replace('.', ' '))[0]
@@ -457,12 +466,13 @@ class trainer:
 
                 print(noun)
 
-                top_index = scores.flatten().sort(descending=True, dim=0).indices[:10000] # save top-10000 multi-modal neurons
+                top_index = scores.flatten().sort(descending=True, dim=0).indices[
+                            :10000]  # save top-10000 multi-modal neurons
                 top_pos = [(x.item() // scores.shape[1], x.item() % scores.shape[1]) for x in top_index]
 
                 results = {'caption': outputs, 'top_neurons': []}
 
-                # find skill neurons
+                # find multi-modal neurons
                 mm_neurons = []
                 for i, pos in enumerate(top_pos):
                     mm_neurons.append([pos[0], pos[1]])
@@ -480,6 +490,58 @@ class trainer:
                 torch.save(img_tensor, f'{save_dir}/image_tensor')
                 image = Image.fromarray(np.uint8(img_tensor.numpy())).convert('RGBA')
                 image.save(f'{save_dir}/image.png')
+
+                # draw heatmap and binary mask
+                for mean_num in [1, 10, 50, 100, 500, 1000]:
+                    mean_activation = torch.stack(
+                        [activations[x[0], :, x[1]].reshape(16, 16, 1) for x in mm_neurons[:mean_num]]).mean(dim=0).numpy()
+
+                    new_activation = bilinear_interpolation(mean_activation, img_tensor.shape[0], img_tensor.shape[1])
+
+                    # plot heatmap
+                    new_activation_ = (new_activation - new_activation.min()) / (new_activation.max() - new_activation.min())
+                    heatmap = cv2.applyColorMap(np.uint8(255 * new_activation_), cv2.COLORMAP_JET)
+                    heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
+                    heatmap = Image.fromarray(heatmap).convert('RGBA')
+                    heatmap.putalpha(int(0.5 * 255))
+                    new_image = Image.alpha_composite(image, heatmap).convert('RGB')
+                    new_image.save(f'{save_dir}/heatmap_average_{mean_num}.png')
+
+                    # plot binary mask
+                    thres = np.percentile(new_activation, 95)
+                    pos = np.where(new_activation > thres)
+                    mask = Image.new('RGBA', (img_tensor.shape[0], img_tensor.shape[1]), (0, 0, 0, 200))
+                    mask_pixels = mask.load()
+                    for i, j in zip(pos[0], pos[1]):
+                        mask_pixels[j, i] = (255, 255, 255, 0)
+                    new_image = Image.alpha_composite(image, mask).convert('RGB')
+                    new_image.save(f'{save_dir}/mask_average_{mean_num}.png')
+
+                for i in range(5):
+                    mm_neuron = mm_neurons[i]
+                    torch.save(activations[mm_neuron[0], :, mm_neuron[1]].float().half(), f'{save_dir}/activation_L{mm_neuron[0]}_u{mm_neuron[1]}')
+                    activation = activations[mm_neuron[0], :, mm_neuron[1]].reshape(16, 16, 1).numpy()
+                    new_activation = bilinear_interpolation(activation, img_tensor.shape[0], img_tensor.shape[1])
+
+                    # plot heatmap
+                    new_activation_ = (new_activation - new_activation.min()) / (
+                                new_activation.max() - new_activation.min())
+                    heatmap = cv2.applyColorMap(np.uint8(255 * new_activation_), cv2.COLORMAP_JET)
+                    heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
+                    heatmap = Image.fromarray(heatmap).convert('RGBA')
+                    heatmap.putalpha(int(0.5 * 255))
+                    new_image = Image.alpha_composite(image, heatmap).convert('RGB')
+                    new_image.save(f'{save_dir}/heatmap_L{mm_neuron[0]}_u{mm_neuron[1]}.png')
+
+                    # plot binary mask
+                    thres = np.percentile(new_activation, 95)
+                    pos = np.where(new_activation > thres)
+                    mask = Image.new('RGBA', (img_tensor.shape[0], img_tensor.shape[1]), (0, 0, 0, 200))
+                    mask_pixels = mask.load()
+                    for i, j in zip(pos[0], pos[1]):
+                        mask_pixels[j, i] = (255, 255, 255, 0)
+                    new_image = Image.alpha_composite(image, mask).convert('RGB')
+                    new_image.save(f'{save_dir}/mask_L{mm_neuron[0]}_u{mm_neuron[1]}.png')
 
             if 0 < self.args.max_num <= cnt - self.args.start + 1 or self.args.end <= cnt:
                 break
