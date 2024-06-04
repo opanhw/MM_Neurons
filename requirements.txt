@@ -1,0 +1,3 @@
+torch==2.0.1
+transformer==4.29.1
+corenlp_client==1.0.6
