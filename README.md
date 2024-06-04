@@ -1,8 +1,16 @@
 # Finding and Editing Multi-Modal Neurons in Pre-Trained Transformers
 This repository is the official implementation of the paper ["Finding and Editing Multi-Modal Neurons in Pre-Trained Transformers"](https://arxiv.org/abs/2311.07470)
 
-## News
-* 16/05/2024: The paper has been accepted to the Findings of ACL 2024! Code will be released soon.
+## Requirements
+
+To get started, please clone this repository and install packages as:
+
+```bash
+git clone https://github.com/opanhw/MM_Neurons.git
+conda create -n MM_Neurons python=3.9
+...
+pip install -r requirements.txt
+```
 
 ## Model Preparation
 
@@ -14,7 +22,7 @@ We evaluate three widely used Multi-modal Large Language Models: [LLaVA](https:/
 
 Since we need to obtain and modify neuron activations, we have made some modifications to the model source code. Please replace `LLaVA/llava/model/language_model/llava_llama.py` in your LLaVA project path with `open_source_model/LLaVA/llava_llama.py` and replace `mPLUG-Owl/mPLUG-Owl2/mplug_owl2/model/modeling_mplug_owl2.py` in your mPLUG-Owl2 project path with `open_source_model/mPLUG-Owl2/modeling_mplug_owl2.py` .
 
-You should run `src/preparation.py` for some preparation work before finding neurons like:
+You should run `src/preparation.py` for some preparation work before finding neurons. A sample usage command is:
 
 ```bash
 python src/preparation.py --model_type LLaVA --model_path YOUR_LLAVA_MODEL_PATH
@@ -25,6 +33,8 @@ python src/preparation.py --model_type LLaVA --model_path YOUR_LLAVA_MODEL_PATH
 - SBU Captions Dataset
 
 See the dataset details in [this page](https://www.cs.rice.edu/~vo9/sbucaptions/).
+
+You should download the [json file](https://www.cs.rice.edu/~vo9/sbucaptions/sbu-captions-all.tar.gz) which contains image urls + captions.
 
 ## Finding Multi-Modal Neurons
 
