@@ -72,10 +72,10 @@ Thanks [@wonderful9462](https://github.com/wonderful9462) for the assistance in 
 
 If you find this code useful, please kindly cite our work as:
 ```bibtex
-@misc{pan2023finding,
-      title={Finding and Editing Multi-Modal Neurons in Pre-Trained Transformer}, 
-      author={Haowen Pan and Yixin Cao and Xiaozhi Wang and Xun Yang},
-      year={2023},
+@misc{pan2024finding,
+      title={Finding and Editing Multi-Modal Neurons in Pre-Trained Transformers}, 
+      author={Haowen Pan and Yixin Cao and Xiaozhi Wang and Xun Yang and Meng Wang},
+      year={2024},
       eprint={2311.07470},
       archivePrefix={arXiv},
       primaryClass={cs.CL}
