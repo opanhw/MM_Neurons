@@ -1,5 +1,5 @@
 # Finding and Editing Multi-Modal Neurons in Pre-Trained Transformers
-This repository is the official implementation of the paper ["Finding and Editing Multi-Modal Neurons in Pre-Trained Transformers"](https://arxiv.org/abs/2311.07470) (Fingdings of ACL 2024)
+This repository is the official implementation of the paper ["Finding and Editing Multi-Modal Neurons in Pre-Trained Transformers"](https://arxiv.org/abs/2311.07470) (Findings of ACL 2024).
 
 ## Requirements
 
