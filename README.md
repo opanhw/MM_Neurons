@@ -72,12 +72,22 @@ Thanks [@wonderful9462](https://github.com/wonderful9462) for the assistance in 
 
 If you find this code useful, please kindly cite our work as:
 ```bibtex
-@misc{pan2024finding,
-      title={Finding and Editing Multi-Modal Neurons in Pre-Trained Transformers}, 
-      author={Haowen Pan and Yixin Cao and Xiaozhi Wang and Xun Yang and Meng Wang},
-      year={2024},
-      eprint={2311.07470},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL}
+@inproceedings{pan-etal-2024-finding,
+    title = "Finding and Editing Multi-Modal Neurons in Pre-Trained Transformers",
+    author = "Pan, Haowen  and
+      Cao, Yixin  and
+      Wang, Xiaozhi  and
+      Yang, Xun  and
+      Wang, Meng",
+    editor = "Ku, Lun-Wei  and
+      Martins, Andre  and
+      Srikumar, Vivek",
+    booktitle = "Findings of the Association for Computational Linguistics ACL 2024",
+    month = aug,
+    year = "2024",
+    address = "Bangkok, Thailand and virtual meeting",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.findings-acl.60",
+    pages = "1012--1037",
 }
 ```
