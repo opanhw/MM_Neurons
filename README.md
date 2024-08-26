@@ -20,6 +20,8 @@ We evaluate three widely used Multi-modal Large Language Models: [LLaVA](https:/
 - [InstructBLIP](https://huggingface.co/Salesforce/instructblip-vicuna-7b)
 - [mPLUG-Owl2](https://huggingface.co/MAGAer13/mplug-owl2-llama2-7b)
 
+**Please note that we recommend using an earlier version of LLaVA ([link](https://github.com/haotian-liu/LLaVA/archive/refs/tags/v1.0.2.tar.gz)), as the method of calling certain classes and the parameters in the latest version of LLaVA may not be consistent with our code.**
+
 Since we need to obtain and modify neuron activations, we have made some modifications to the model source code. Please replace `LLaVA/llava/model/language_model/llava_llama.py` in your LLaVA project path with `open_source_model/LLaVA/llava_llama.py` and replace `mPLUG-Owl/mPLUG-Owl2/mplug_owl2/model/modeling_mplug_owl2.py` in your mPLUG-Owl2 project path with `open_source_model/mPLUG-Owl2/modeling_mplug_owl2.py` .
 
 You should run `src/preparation.py` for some preparation work before finding neurons. A sample usage command is:
