@@ -422,8 +422,6 @@ class trainer:
                     outputs = outputs.strip()
                 print(outputs)
 
-                # exit(0)
-
                 output_tokens = output_tokens[0].cpu().tolist()
                 print(output_tokens)
 
