@@ -120,6 +120,10 @@ class trainer:
             # image token length of llava is 256
             self.image_token_len = 256
 
+			patch_cut = prompt[:prompt.find(DEFAULT_IMAGE_TOKEN)]
+			self.patch_start = len(self.tokenizer.encode(patch_cut))
+			self.patch_end = self.patch_start + self.image_token_len
+
 
         elif self.args.model_type == "instructblip":
             from modeling_instructblip import InstructBlipForConditionalGeneration
@@ -491,57 +495,60 @@ class trainer:
                 image = Image.fromarray(np.uint8(img_tensor.numpy())).convert('RGBA')
                 image.save(f'{save_dir}/image.png')
 
-                # draw heatmap and binary mask
-                for mean_num in [1, 10, 50, 100, 500, 1000]:
-                    mean_activation = torch.stack(
-                        [activations[x[0], :, x[1]].reshape(16, 16, 1) for x in mm_neurons[:mean_num]]).mean(dim=0).numpy()
+				if self.args.model_type == 'llava':
+				    activations = torch.stack(self.model.activations)[:, self.patch_start:self.patch_end]
 
-                    new_activation = bilinear_interpolation(mean_activation, img_tensor.shape[0], img_tensor.shape[1])
-
-                    # plot heatmap
-                    new_activation_ = (new_activation - new_activation.min()) / (new_activation.max() - new_activation.min())
-                    heatmap = cv2.applyColorMap(np.uint8(255 * new_activation_), cv2.COLORMAP_JET)
-                    heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
-                    heatmap = Image.fromarray(heatmap).convert('RGBA')
-                    heatmap.putalpha(int(0.5 * 255))
-                    new_image = Image.alpha_composite(image, heatmap).convert('RGB')
-                    new_image.save(f'{save_dir}/heatmap_average_{mean_num}.png')
-
-                    # plot binary mask
-                    thres = np.percentile(new_activation, 95)
-                    pos = np.where(new_activation > thres)
-                    mask = Image.new('RGBA', (img_tensor.shape[0], img_tensor.shape[1]), (0, 0, 0, 200))
-                    mask_pixels = mask.load()
-                    for i, j in zip(pos[0], pos[1]):
-                        mask_pixels[j, i] = (255, 255, 255, 0)
-                    new_image = Image.alpha_composite(image, mask).convert('RGB')
-                    new_image.save(f'{save_dir}/mask_average_{mean_num}.png')
-
-                for i in range(5):
-                    mm_neuron = mm_neurons[i]
-                    torch.save(activations[mm_neuron[0], :, mm_neuron[1]].float().half(), f'{save_dir}/activation_L{mm_neuron[0]}_u{mm_neuron[1]}')
-                    activation = activations[mm_neuron[0], :, mm_neuron[1]].reshape(16, 16, 1).numpy()
-                    new_activation = bilinear_interpolation(activation, img_tensor.shape[0], img_tensor.shape[1])
-
-                    # plot heatmap
-                    new_activation_ = (new_activation - new_activation.min()) / (
-                                new_activation.max() - new_activation.min())
-                    heatmap = cv2.applyColorMap(np.uint8(255 * new_activation_), cv2.COLORMAP_JET)
-                    heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
-                    heatmap = Image.fromarray(heatmap).convert('RGBA')
-                    heatmap.putalpha(int(0.5 * 255))
-                    new_image = Image.alpha_composite(image, heatmap).convert('RGB')
-                    new_image.save(f'{save_dir}/heatmap_L{mm_neuron[0]}_u{mm_neuron[1]}.png')
-
-                    # plot binary mask
-                    thres = np.percentile(new_activation, 95)
-                    pos = np.where(new_activation > thres)
-                    mask = Image.new('RGBA', (img_tensor.shape[0], img_tensor.shape[1]), (0, 0, 0, 200))
-                    mask_pixels = mask.load()
-                    for i, j in zip(pos[0], pos[1]):
-                        mask_pixels[j, i] = (255, 255, 255, 0)
-                    new_image = Image.alpha_composite(image, mask).convert('RGB')
-                    new_image.save(f'{save_dir}/mask_L{mm_neuron[0]}_u{mm_neuron[1]}.png')
+	                # draw heatmap and binary mask
+	                for mean_num in [1, 10, 50, 100, 500, 1000]:
+	                    mean_activation = torch.stack(
+	                        [activations[x[0], :, x[1]].reshape(16, 16, 1) for x in mm_neurons[:mean_num]]).mean(dim=0).numpy()
+	
+	                    new_activation = bilinear_interpolation(mean_activation, img_tensor.shape[0], img_tensor.shape[1])
+	
+	                    # plot heatmap
+	                    new_activation_ = (new_activation - new_activation.min()) / (new_activation.max() - new_activation.min())
+	                    heatmap = cv2.applyColorMap(np.uint8(255 * new_activation_), cv2.COLORMAP_JET)
+	                    heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
+	                    heatmap = Image.fromarray(heatmap).convert('RGBA')
+	                    heatmap.putalpha(int(0.5 * 255))
+	                    new_image = Image.alpha_composite(image, heatmap).convert('RGB')
+	                    new_image.save(f'{save_dir}/heatmap_average_{mean_num}.png')
+	
+	                    # plot binary mask
+	                    thres = np.percentile(new_activation, 95)
+	                    pos = np.where(new_activation > thres)
+	                    mask = Image.new('RGBA', (img_tensor.shape[0], img_tensor.shape[1]), (0, 0, 0, 200))
+	                    mask_pixels = mask.load()
+	                    for i, j in zip(pos[0], pos[1]):
+	                        mask_pixels[j, i] = (255, 255, 255, 0)
+	                    new_image = Image.alpha_composite(image, mask).convert('RGB')
+	                    new_image.save(f'{save_dir}/mask_average_{mean_num}.png')
+	
+	                for i in range(5):
+	                    mm_neuron = mm_neurons[i]
+	                    torch.save(activations[mm_neuron[0], :, mm_neuron[1]].float().half(), f'{save_dir}/activation_L{mm_neuron[0]}_u{mm_neuron[1]}')
+	                    activation = activations[mm_neuron[0], :, mm_neuron[1]].reshape(16, 16, 1).numpy()
+	                    new_activation = bilinear_interpolation(activation, img_tensor.shape[0], img_tensor.shape[1])
+	
+	                    # plot heatmap
+	                    new_activation_ = (new_activation - new_activation.min()) / (
+	                                new_activation.max() - new_activation.min())
+	                    heatmap = cv2.applyColorMap(np.uint8(255 * new_activation_), cv2.COLORMAP_JET)
+	                    heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
+	                    heatmap = Image.fromarray(heatmap).convert('RGBA')
+	                    heatmap.putalpha(int(0.5 * 255))
+	                    new_image = Image.alpha_composite(image, heatmap).convert('RGB')
+	                    new_image.save(f'{save_dir}/heatmap_L{mm_neuron[0]}_u{mm_neuron[1]}.png')
+	
+	                    # plot binary mask
+	                    thres = np.percentile(new_activation, 95)
+	                    pos = np.where(new_activation > thres)
+	                    mask = Image.new('RGBA', (img_tensor.shape[0], img_tensor.shape[1]), (0, 0, 0, 200))
+	                    mask_pixels = mask.load()
+	                    for i, j in zip(pos[0], pos[1]):
+	                        mask_pixels[j, i] = (255, 255, 255, 0)
+	                    new_image = Image.alpha_composite(image, mask).convert('RGB')
+	                    new_image.save(f'{save_dir}/mask_L{mm_neuron[0]}_u{mm_neuron[1]}.png')
 
             if 0 < self.args.max_num <= cnt - self.args.start + 1 or self.args.end <= cnt:
                 break
