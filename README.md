@@ -64,6 +64,8 @@ python src/find_mm_neurons.py --model_type LLaVA --model_path YOUR_LLAVA_MODEL_P
 - `cal_activations`: whether to return activations of neurons, store true
 - `shuffle`: whether to shuffle the input sequence of image tokens, store true
 
+If you want to plot heatmap and binary mask (only for LLaVA), please replace `transformers/models/blip/image_processing_blip.py` in your own python libary with `src/image_processing_blip.py` to get image tensors before being rescaled and normalized.
+
 ## Acknowledgements
 
 Some codes are built upon [Skill-Neuron](https://github.com/THU-KEG/Skill-Neuron).
