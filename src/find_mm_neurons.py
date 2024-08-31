@@ -24,6 +24,7 @@ def main():
     parser.add_argument("--task_type", default="sbu", type=str, help="Type of task")
     parser.add_argument("--data_path", default='../../datasets/sbu',
                         type=str, help="Path to the data")
+    parser.add_argument("--preparation_path", type=str, default="./preparation", help="Path to preparation")
     parser.add_argument("--query", type=str, default=None)
     parser.add_argument("--random_seed", default=42, type=int, help="Random seed used")
     parser.add_argument("--bz", default=1, type=int, help="Batch size")
