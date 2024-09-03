@@ -76,7 +76,7 @@ Thanks [@wonderful9462](https://github.com/wonderful9462) for the assistance in 
 
 If you find this code useful, please kindly cite our work as:
 ```bibtex
-@inproceedings{pan-etal-2024-finding,
+@inproceedings{pan2024finding,
     title = "Finding and Editing Multi-Modal Neurons in Pre-Trained Transformers",
     author = "Pan, Haowen  and
       Cao, Yixin  and
