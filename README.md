@@ -92,6 +92,7 @@ If you find this code useful, please kindly cite our work as:
     address = "Bangkok, Thailand and virtual meeting",
     publisher = "Association for Computational Linguistics",
     url = "https://aclanthology.org/2024.findings-acl.60",
+    doi = "10.18653/v1/2024.findings-acl.60",
     pages = "1012--1037",
 }
 ```
