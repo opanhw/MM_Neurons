@@ -1474,11 +1474,11 @@ class InstructBlipForConditionalGeneration(InstructBlipPreTrainedModel):
 
             def forward_hook(n):
                 def fn(_, input, output):
-                    self.act[n].append(output.detach())
+                    self.act[n].append(input[0].detach())
 
                 return fn
 
-            handle_act = [self.language_model.model.layers[n].mlp.act_fn.register_forward_hook(forward_hook(n)) for n in
+            handle_act = [self.language_model.model.layers[n].mlp.down_proj.register_forward_hook(forward_hook(n)) for n in
                           range(self.config.num_hidden_layers)]
 
         outputs = self.language_model(
